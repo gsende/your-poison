@@ -95,6 +95,12 @@
       font-style: italic; color: var(--parchment-dk);
       font-size: clamp(.72rem, 2vw, .95rem); letter-spacing: .22em; opacity: .8;
     }
+    .firulete-wrap {
+      display: flex; justify-content: center;
+      margin: .6rem auto 0; max-width: 560px; padding: 0 1rem; opacity: .85;
+    }
+    .firulete { width: 100%; max-width: 520px; height: auto; overflow: visible; }
+
     .deco-divider {
       display: flex; align-items: center; justify-content: center; gap: .7rem;
       margin: 1.2rem auto; max-width: 560px; padding: 0 2rem;
@@ -454,8 +460,57 @@
   <div class="home-hero">
     <p class="home-ornament">◆ &nbsp; ◆ &nbsp; ◆</p>
     <h1 class="home-title">CHOOSE YOUR POISON</h1>
-    <p class="home-subtitle">Est. 1923 &mdash; A Clandestine Collection of Fine Libations</p>
-    <div class="deco-divider"><span class="deco-diamond">◆ &thinsp; ◇ &thinsp; ◆</span></div>
+    <!-- Firulete ornament -->
+    <div class="firulete-wrap">
+      <svg class="firulete" viewBox="0 0 520 72" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <!-- Left sweeping vine arm -->
+        <path d="M 260,36 C 230,36 210,20 190,22 C 170,24 158,38 140,34 C 122,30 112,14 92,16 C 72,18 58,34 38,32 C 28,31 18,24 10,28"
+              stroke="#c9a84c" stroke-width="1.2" stroke-linecap="round"/>
+        <!-- Right sweeping vine arm (mirror) -->
+        <path d="M 260,36 C 290,36 310,20 330,22 C 350,24 362,38 380,34 C 398,30 408,14 428,16 C 448,18 462,34 482,32 C 492,31 502,24 510,28"
+              stroke="#c9a84c" stroke-width="1.2" stroke-linecap="round"/>
+        <!-- Left curling scrolls -->
+        <path d="M 190,22 C 185,16 178,10 174,14 C 170,18 176,26 182,22 C 178,20 174,22 175,26"
+              stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <path d="M 140,34 C 136,24 128,18 124,24 C 120,30 128,38 134,32 C 130,30 126,33 128,37"
+              stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <path d="M 92,16 C 88,8 80,4 77,10 C 74,16 82,24 88,18 C 84,16 80,19 82,24"
+              stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <path d="M 38,32 C 34,22 26,18 24,25 C 22,32 30,40 36,34 C 32,32 29,35 31,39"
+              stroke="#c9a84c" stroke-width=".9" stroke-linecap="round"/>
+        <!-- Right curling scrolls (mirror) -->
+        <path d="M 330,22 C 335,16 342,10 346,14 C 350,18 344,26 338,22 C 342,20 346,22 345,26"
+              stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <path d="M 380,34 C 384,24 392,18 396,24 C 400,30 392,38 386,32 C 390,30 394,33 392,37"
+              stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <path d="M 428,16 C 432,8 440,4 443,10 C 446,16 438,24 432,18 C 436,16 440,19 438,24"
+              stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <path d="M 482,32 C 486,22 494,18 496,25 C 498,32 490,40 484,34 C 488,32 491,35 489,39"
+              stroke="#c9a84c" stroke-width=".9" stroke-linecap="round"/>
+        <!-- Left small leaf sprigs -->
+        <path d="M 210,26 C 208,18 214,12 218,16 C 216,20 212,22 210,26 Z" fill="rgba(201,168,76,.3)" stroke="#c9a84c" stroke-width=".8"/>
+        <path d="M 160,30 C 156,22 162,16 166,20 C 164,24 160,26 160,30 Z" fill="rgba(201,168,76,.25)" stroke="#c9a84c" stroke-width=".8"/>
+        <path d="M 112,20 C 108,12 114,6 118,10 C 116,14 112,16 112,20 Z" fill="rgba(201,168,76,.25)" stroke="#c9a84c" stroke-width=".8"/>
+        <path d="M 60,28 C 56,20 62,14 66,18 C 64,22 60,24 60,28 Z" fill="rgba(201,168,76,.2)" stroke="#c9a84c" stroke-width=".75"/>
+        <!-- Right small leaf sprigs (mirror) -->
+        <path d="M 310,26 C 312,18 306,12 302,16 C 304,20 308,22 310,26 Z" fill="rgba(201,168,76,.3)" stroke="#c9a84c" stroke-width=".8"/>
+        <path d="M 360,30 C 364,22 358,16 354,20 C 356,24 360,26 360,30 Z" fill="rgba(201,168,76,.25)" stroke="#c9a84c" stroke-width=".8"/>
+        <path d="M 408,20 C 412,12 406,6 402,10 C 404,14 408,16 408,20 Z" fill="rgba(201,168,76,.25)" stroke="#c9a84c" stroke-width=".8"/>
+        <path d="M 460,28 C 464,20 458,14 454,18 C 456,22 460,24 460,28 Z" fill="rgba(201,168,76,.2)" stroke="#c9a84c" stroke-width=".75"/>
+        <!-- Central flourish -->
+        <path d="M 260,36 C 256,28 248,22 244,28 C 240,34 246,42 252,38 C 248,35 245,38 247,42"
+              stroke="#c9a84c" stroke-width="1.1" stroke-linecap="round"/>
+        <path d="M 260,36 C 264,28 272,22 276,28 C 280,34 274,42 268,38 C 272,35 275,38 273,42"
+              stroke="#c9a84c" stroke-width="1.1" stroke-linecap="round"/>
+        <circle cx="260" cy="36" r="2.5" fill="#c9a84c" opacity=".8"/>
+        <circle cx="190" cy="22" r="1.4" fill="#c9a84c" opacity=".55"/>
+        <circle cx="140" cy="34" r="1.4" fill="#c9a84c" opacity=".5"/>
+        <circle cx="92"  cy="16" r="1.4" fill="#c9a84c" opacity=".45"/>
+        <circle cx="330" cy="22" r="1.4" fill="#c9a84c" opacity=".55"/>
+        <circle cx="380" cy="34" r="1.4" fill="#c9a84c" opacity=".5"/>
+        <circle cx="428" cy="16" r="1.4" fill="#c9a84c" opacity=".45"/>
+      </svg>
+    </div>
   </div>
 
   <div class="home-cards">
@@ -1429,7 +1484,7 @@ function renderGrid() {
     document.getElementById('section-title').textContent = SECTION_TITLES.classics;
     document.getElementById('spirit-tabs-wrap').style.display = 'none';
   } else if (currentView === 'by-bottle') {
-    list = sortAZ(COCKTAILS.filter(c => c.section === 'by-bottle' && c.category === currentSpirit));
+    list = sortAZ(COCKTAILS.filter(c => c.category === currentSpirit));
     document.getElementById('section-title').textContent = SECTION_TITLES['by-bottle'];
     document.getElementById('spirit-tabs-wrap').style.display = 'block';
     renderSpiritTabs();
