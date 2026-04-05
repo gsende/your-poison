@@ -443,10 +443,23 @@
     ::-webkit-scrollbar-thumb:hover { background: var(--gold-mid); }
 
     .site-footer {
-      text-align: center; padding: 2rem; color: var(--parchment-dk);
-      opacity: .28; font-style: italic; font-size: .72rem; letter-spacing: .12em;
+      text-align: center;
+      padding: 1.5rem 2rem 2rem;
+      border-top: 1px solid rgba(160,120,48,.18);
     }
-    .site-footer p + p { margin-top: .3rem; }
+    .footer-inner {
+      display: inline-flex; align-items: center; gap: .6rem;
+    }
+    .footer-tm {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem; color: var(--gold-dark); opacity: .5;
+      line-height: 1;
+    }
+    .footer-text {
+      font-style: italic; font-size: .72rem;
+      color: var(--parchment-dk); opacity: .38;
+      letter-spacing: .1em;
+    }
 
     @media (max-width: 480px) {
       .thumb-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: .7rem; }
@@ -631,9 +644,11 @@
   </div>
 </div>
 
-<footer class="site-footer" id="site-footer" style="display:none">
-  <p>Drink responsibly &mdash; know your measure &mdash; respect the craft.</p>
-  <p>◆ &nbsp; Est. 1923 &nbsp; ◆</p>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-tm">™</span>
+    <span class="footer-text">Developed by Guido S &nbsp;·&nbsp; 2026</span>
+  </div>
 </footer>
 
 <script>
