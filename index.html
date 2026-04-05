@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Your Poison — Est. 1923</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-darkest: #0f0d0b;
+      --bg-dark:    #1a1510;
+      --bg-mid:     #231e17;
+      --parchment-lt: #ede0c8;
+      --parchment-md: #d5c5a8;
+      --parchment-dk: #c9b99a;
+      --gold-bright:  #e6c56a;
+      --gold-mid:     #c9a84c;
+      --gold-dark:    #a07830;
+      --burgundy:     #5c1a1a;
+      --text-card:    #1f1a0e;
+      --text-light:   #e8dcc8;
+      --text-muted:   #c9b99a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg-darkest);
+      background-image:
+        radial-gradient(ellipse at 15% 60%, rgba(92,26,26,.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 15%, rgba(201,168,76,.06) 0%, transparent 45%);
+      min-height: 100vh;
+      font-family: 'IM Fell English', serif;
+      color: var(--text-light);
+      overflow-x: hidden;
+    }
+
+    /* ── Grain ── */
+    body::before {
+      content: '';
+      position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+      opacity: .045; pointer-events: none; z-index: 9999;
+      animation: grain .35s steps(1) infinite;
+    }
+    /* ── Vignette ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 50% 45%, transparent 38%, rgba(0,0,0,.65) 100%);
+      pointer-events: none; z-index: 9998;
+      animation: candleGlow 5s ease-in-out infinite;
+    }
+    @keyframes grain {
+      0%{transform:translate(0,0)}10%{transform:translate(-5%,-10%)}20%{transform:translate(-15%,5%)}
+      30%{transform:translate(7%,-25%)}40%{transform:translate(-5%,25%)}50%{transform:translate(-15%,10%)}
+      60%{transform:translate(15%,0%)}70%{transform:translate(0%,15%)}80%{transform:translate(3%,35%)}
+      90%{transform:translate(-10%,10%)}100%{transform:translate(3%,-15%)}
+    }
+    @keyframes candleGlow { 0%,100%{opacity:1} 35%{opacity:.82} 70%{opacity:.93} }
+
+    /* ═══════════════════════════════════════
+       SCREENS
+    ═══════════════════════════════════════ */
+    .screen { display: none; animation: fadeUp .4s ease; }
+    .screen.active { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═══════════════════════════════════════
+       HOME SCREEN
+    ═══════════════════════════════════════ */
+    .home-hero {
+      text-align: center;
+      padding: 3rem 2rem 2rem;
+    }
+    .home-ornament {
+      color: var(--gold-mid); font-size: .75rem; letter-spacing: .6em; opacity: .75; margin-bottom: .7rem;
+    }
+    .home-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 9vw, 5.5rem);
+      font-weight: 900; letter-spacing: .12em;
+      color: var(--gold-bright);
+      text-shadow: 0 0 35px rgba(230,197,106,.28), 0 2px 5px rgba(0,0,0,.9), 2px 2px 0 rgba(140,100,30,.5);
+      line-height: 1; margin-bottom: .6rem;
+    }
+    .home-subtitle {
+      font-style: italic; color: var(--parchment-dk);
+      font-size: clamp(.72rem, 2vw, .95rem); letter-spacing: .22em; opacity: .8;
+    }
+    .deco-divider {
+      display: flex; align-items: center; justify-content: center; gap: .7rem;
+      margin: 1.2rem auto; max-width: 560px; padding: 0 2rem;
+    }
+    .deco-divider::before { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--gold-mid)); }
+    .deco-divider::after  { content: ''; flex: 1; height: 1px; background: linear-gradient(to left,  transparent, var(--gold-mid)); }
+    .deco-diamond { color: var(--gold-mid); font-size: .65rem; letter-spacing: .3em; }
+
+    /* Home section cards */
+    .home-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.8rem;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.8rem 4rem;
+    }
+    .home-card {
+      background: linear-gradient(158deg, #ede1ca 0%, #ddd0b0 30%, #d0c0a0 65%, #c5b592 100%);
+      border: 1px solid var(--gold-dark);
+      box-shadow: 0 0 0 3px var(--bg-dark), 0 0 0 4px rgba(160,120,48,.6), 0 10px 35px rgba(0,0,0,.65), inset 0 0 40px rgba(0,0,0,.08);
+      padding: 2.2rem 1.5rem 1.8rem;
+      cursor: pointer; text-align: center; color: var(--text-card);
+      position: relative; overflow: hidden;
+      transition: transform .3s, box-shadow .3s;
+      font-family: inherit;
+      border: none; /* reset button border */
+      outline: none;
+      border: 1px solid var(--gold-dark);
+    }
+    .home-card::before {
+      content: ''; position: absolute; inset: 7px;
+      border: 1px solid rgba(140,100,30,.32); pointer-events: none; z-index: 1;
+    }
+    .home-card::after {
+      content: '◆'; position: absolute; top: 10px; right: 11px;
+      color: var(--gold-dark); font-size: .52rem; opacity: .55;
+    }
+    .home-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 0 3px var(--bg-dark), 0 0 0 4px var(--gold-mid), 0 18px 45px rgba(0,0,0,.75), 0 0 20px rgba(201,168,76,.1);
+    }
+    .home-card-corner { position: absolute; top: 10px; left: 11px; color: var(--gold-dark); font-size: .52rem; opacity: .55; z-index: 2; }
+    .home-card-icon { margin-bottom: 1.2rem; position: relative; z-index: 2; }
+    .home-card-icon svg { display: block; margin: 0 auto; }
+    .home-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(.9rem, 2.5vw, 1.25rem);
+      font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+      color: #1a1208; margin-bottom: .4rem; position: relative; z-index: 2;
+    }
+    .home-card-sub {
+      font-style: italic; font-size: .75rem; color: #5a4828; position: relative; z-index: 2;
+    }
+    .home-card-divider {
+      height: 1px; background: linear-gradient(to right, transparent, rgba(140,100,30,.5), transparent);
+      margin: .8rem 0; position: relative; z-index: 2;
+    }
+    .paper-texture {
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(0,0,0,.014) 27px, rgba(0,0,0,.014) 28px);
+      pointer-events: none; z-index: 0;
+    }
+
+    @media (max-width: 640px) {
+      .home-cards { grid-template-columns: 1fr; max-width: 420px; gap: 1.2rem; }
+    }
+    @media (min-width: 641px) and (max-width: 900px) {
+      .home-cards { grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 0 1rem 3rem; }
+      .home-card { padding: 1.5rem 1rem 1.2rem; }
+    }
+
+    /* ═══════════════════════════════════════
+       SECTION SCREEN
+    ═══════════════════════════════════════ */
+    .section-bar {
+      display: flex; align-items: center; flex-wrap: wrap; gap: .8rem;
+      padding: 1rem 1.5rem .8rem;
+      border-bottom: 1px solid rgba(160,120,48,.3);
+      max-width: 1380px; margin: 0 auto;
+      position: sticky; top: 0;
+      background: linear-gradient(to bottom, rgba(15,13,11,.96) 85%, transparent);
+      z-index: 100;
+    }
+    .back-btn {
+      display: flex; align-items: center; gap: .5rem;
+      background: none; border: 1px solid rgba(160,120,48,.45);
+      color: var(--parchment-dk); font-family: 'IM Fell English', serif;
+      font-size: .78rem; letter-spacing: .12em;
+      padding: .35rem .8rem; cursor: pointer;
+      transition: border-color .2s, color .2s;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .back-btn:hover { border-color: var(--gold-mid); color: var(--gold-bright); }
+    .back-btn svg { width: 14px; height: 14px; }
+
+    .section-tabs {
+      display: flex; gap: 0; border-bottom: none;
+      flex: 1;
+    }
+    .section-tab {
+      padding: .5rem .9rem;
+      background: none; border: none; border-bottom: 2px solid transparent;
+      color: var(--parchment-dk); font-family: 'Playfair Display', serif;
+      font-size: clamp(.6rem, 1.8vw, .78rem); letter-spacing: .15em; text-transform: uppercase;
+      cursor: pointer; transition: color .25s, border-color .25s; white-space: nowrap;
+    }
+    .section-tab:hover { color: var(--gold-bright); }
+    .section-tab.active { color: var(--gold-bright); border-bottom-color: var(--gold-mid); }
+
+    .search-wrap {
+      position: relative; flex: 0 1 240px; min-width: 160px;
+    }
+    .search-input {
+      width: 100%;
+      background: rgba(20,16,10,.85);
+      border: none; border-bottom: 1px solid var(--gold-dark);
+      color: var(--parchment-lt); font-family: 'IM Fell English', serif;
+      font-size: .85rem; padding: .45rem 2.2rem .45rem .8rem; outline: none;
+      transition: border-color .3s;
+    }
+    .search-input::placeholder { color: var(--parchment-dk); opacity: .45; font-style: italic; }
+    .search-input:focus { border-bottom-color: var(--gold-mid); }
+    .search-icon {
+      position: absolute; right: .5rem; top: 50%; transform: translateY(-50%);
+      color: var(--gold-mid); opacity: .65; pointer-events: none;
+    }
+
+    /* Spirit tabs */
+    .spirit-tabs {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: .45rem; padding: 1rem 1rem .5rem;
+      max-width: 1380px; margin: 0 auto;
+    }
+    .spirit-tab {
+      background: rgba(26,21,16,.75); border: 1px solid rgba(160,120,48,.5);
+      color: var(--parchment-dk); font-family: 'IM Fell English', serif;
+      font-size: .8rem; padding: .38rem .9rem; cursor: pointer; transition: all .22s;
+    }
+    .spirit-tab:hover { border-color: var(--gold-mid); color: var(--gold-bright); background: rgba(201,168,76,.08); }
+    .spirit-tab.active { background: rgba(201,168,76,.13); border-color: var(--gold-mid); color: var(--gold-bright); }
+
+    /* Section heading */
+    .section-heading {
+      text-align: center; padding: 1.5rem 0 .8rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 700;
+      color: var(--gold-mid); letter-spacing: .25em; text-transform: uppercase;
+    }
+
+    /* ═══════════════════════════════════════
+       THUMBNAIL GRID
+    ═══════════════════════════════════════ */
+    .thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+      gap: 1rem;
+      max-width: 1380px; margin: 0 auto;
+      padding: .5rem 1.5rem 5rem;
+    }
+    .thumb-card {
+      background: linear-gradient(158deg, #ede1ca 0%, #ddd0b0 30%, #d0c0a0 65%, #c5b592 100%);
+      border: 1px solid var(--gold-dark);
+      box-shadow: 0 0 0 2px var(--bg-dark), 0 0 0 3px rgba(160,120,48,.5), 0 6px 18px rgba(0,0,0,.5), inset 0 0 30px rgba(0,0,0,.06);
+      padding: 1.1rem .9rem .9rem;
+      cursor: pointer; text-align: center; position: relative; overflow: hidden;
+      transition: transform .25s, box-shadow .25s;
+      font-family: inherit;
+      border: none; /* reset button */
+      outline: none;
+      border: 1px solid var(--gold-dark);
+    }
+    .thumb-card::before {
+      content: ''; position: absolute; inset: 5px;
+      border: 1px solid rgba(140,100,30,.25); pointer-events: none; z-index: 1;
+    }
+    .thumb-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 0 2px var(--bg-dark), 0 0 0 3px var(--gold-mid), 0 10px 28px rgba(0,0,0,.65), 0 0 12px rgba(201,168,76,.08);
+    }
+    .thumb-corner { position: absolute; top: 7px; left: 8px; color: var(--gold-dark); font-size: .45rem; opacity: .5; z-index: 2; }
+    .thumb-fav-dot { position: absolute; top: 6px; right: 8px; color: var(--burgundy); font-size: .62rem; z-index: 2; }
+    .thumb-name {
+      display: block; font-family: 'Playfair Display', serif;
+      font-size: clamp(.78rem, 1.8vw, .95rem); font-weight: 700;
+      color: #1a1208; line-height: 1.3; position: relative; z-index: 2;
+    }
+    .thumb-note {
+      display: block; font-style: italic; font-size: .65rem; color: #5a4828;
+      margin-top: .3rem; letter-spacing: .03em; position: relative; z-index: 2;
+    }
+
+    .no-results {
+      grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;
+      font-style: italic; color: var(--parchment-dk); opacity: .5; font-size: 1.05rem;
+    }
+    .empty-cabinet { text-align: center; padding: 5rem 2rem; }
+    .empty-icon { font-size: 2.8rem; color: var(--gold-dark); opacity: .28; margin-bottom: 1.5rem; }
+    .empty-title { font-family: 'Playfair Display', serif; font-size: 1.45rem; font-style: italic; color: var(--parchment-dk); opacity: .55; margin-bottom: .6rem; }
+    .empty-sub { font-size: .85rem; color: var(--parchment-dk); opacity: .38; font-style: italic; }
+
+    /* ═══════════════════════════════════════
+       MODAL
+    ═══════════════════════════════════════ */
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.78); z-index: 1000;
+      animation: backdropIn .22s ease;
+    }
+    .modal-backdrop.open { display: block; }
+    @keyframes backdropIn { from{opacity:0} to{opacity:1} }
+
+    .modal {
+      display: none;
+      position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(880px, 95vw);
+      max-height: 92vh; overflow-y: auto;
+      background: linear-gradient(158deg, #ede1ca 0%, #ddd0b0 30%, #d0c0a0 65%, #c5b592 100%);
+      border: 1px solid var(--gold-dark);
+      box-shadow: 0 0 0 3px var(--bg-dark), 0 0 0 4px rgba(160,120,48,.7), 0 30px 80px rgba(0,0,0,.9), 0 0 40px rgba(201,168,76,.08);
+      z-index: 1001; color: var(--text-card);
+      position: fixed;
+    }
+    .modal.open {
+      display: block;
+      animation: modalIn .25s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(.93); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    /* Inner Art Deco border */
+    .modal::before {
+      content: ''; position: absolute; inset: 7px;
+      border: 1px solid rgba(140,100,30,.3); pointer-events: none; z-index: 0;
+    }
+
+    .modal-close {
+      position: absolute; top: .8rem; right: 1rem;
+      background: none; border: none; font-size: 1.05rem; cursor: pointer;
+      color: #3d2c10; opacity: .55; transition: opacity .2s; z-index: 10;
+      font-family: 'Playfair Display', serif; letter-spacing: .05em;
+    }
+    .modal-close:hover { opacity: 1; }
+
+    .modal-inner {
+      display: grid; grid-template-columns: 210px 1fr; position: relative; z-index: 1;
+    }
+    .modal-left {
+      background: rgba(0,0,0,.1);
+      border-right: 1px solid rgba(140,100,30,.28);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 2.8rem 1.2rem 2rem; gap: 1.4rem;
+    }
+    .modal-glass-wrap svg { display: block; width: 160px; height: 200px; }
+    .modal-fav-btn {
+      background: none; border: 1px solid rgba(140,100,30,.4);
+      cursor: pointer; padding: .4rem .9rem;
+      display: flex; align-items: center; gap: .4rem;
+      color: #3d2c10; font-family: 'IM Fell English', serif;
+      font-size: .72rem; letter-spacing: .1em; transition: all .2s;
+    }
+    .modal-fav-btn:hover { border-color: var(--gold-mid); color: #1a1208; }
+    .modal-fav-btn.active { background: rgba(92,26,26,.15); border-color: var(--burgundy); color: var(--burgundy); }
+    .modal-fav-btn svg { width: 1rem; height: 1rem; stroke-width: 1.5; transition: fill .2s, stroke .2s; }
+    .modal-fav-btn:not(.active) svg { fill: none; stroke: currentColor; }
+    .modal-fav-btn.active svg { fill: var(--burgundy); stroke: var(--burgundy); }
+
+    .modal-right {
+      padding: 2.2rem 2rem 1.8rem 1.8rem;
+      overflow-y: auto;
+    }
+    .modal-name {
+      font-family: 'Playfair Display', serif; font-size: clamp(1.3rem, 3vw, 1.8rem);
+      font-weight: 700; color: #1a1208; line-height: 1.15; margin-bottom: .25rem;
+      padding-right: 2rem;
+    }
+    .modal-glass-label {
+      font-style: italic; font-size: .78rem; color: #5a4828; margin-bottom: .9rem;
+    }
+    .modal-divider {
+      height: 1px; background: linear-gradient(to right, transparent, rgba(140,100,30,.5), transparent);
+      margin: .75rem 0;
+    }
+    .modal-section-label {
+      font-family: 'Playfair Display', serif; font-size: .62rem; font-weight: 700;
+      letter-spacing: .28em; text-transform: uppercase; color: #3d2c10; margin-bottom: .45rem;
+    }
+    .modal-ingredients { list-style: none; margin-bottom: .4rem; }
+    .modal-ingredients li {
+      font-size: .855rem; padding: .18rem 0 .18rem 1rem; position: relative;
+      line-height: 1.45; color: #2a1f0e;
+    }
+    .modal-ingredients li::before {
+      content: '—'; position: absolute; left: 0; color: var(--gold-dark); font-size: .72rem; top: .22rem;
+    }
+    .modal-method { margin-bottom: .2rem; }
+    .modal-step {
+      font-size: .855rem; line-height: 1.55; padding-left: 1.3rem;
+      position: relative; margin-bottom: .18rem; color: #2a1f0e;
+    }
+    .modal-step-num {
+      position: absolute; left: 0; font-family: 'Playfair Display', serif;
+      font-size: .68rem; font-weight: 700; color: var(--gold-dark); top: .06rem;
+    }
+    .modal-garnish { margin-top: .8rem; font-size: .8rem; color: #3d2c10; line-height: 1.4; }
+    .modal-garnish-label {
+      font-family: 'Playfair Display', serif; font-size: .62rem; font-weight: 700;
+      letter-spacing: .2em; text-transform: uppercase;
+    }
+    .modal-note {
+      margin-top: .85rem; padding-top: .85rem;
+      border-top: 1px solid rgba(140,100,30,.22);
+      font-style: italic; font-size: .78rem; color: #5a4828; line-height: 1.6;
+    }
+
+    /* Mobile modal */
+    @media (max-width: 580px) {
+      .modal-inner { grid-template-columns: 1fr; }
+      .modal-left {
+        flex-direction: row; padding: 1.5rem 1.2rem 1rem;
+        border-right: none; border-bottom: 1px solid rgba(140,100,30,.28);
+        justify-content: center; gap: 2rem;
+      }
+      .modal-glass-wrap svg { width: 100px; height: 125px; }
+      .modal-right { padding: 1.5rem 1.2rem 1.2rem; }
+    }
+
+    /* ═══════════════════════════════════════
+       SCROLLBAR + FOOTER
+    ═══════════════════════════════════════ */
+    ::-webkit-scrollbar { width: 7px; }
+    ::-webkit-scrollbar-track { background: var(--bg-darkest); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dark); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gold-mid); }
+
+    .site-footer {
+      text-align: center; padding: 2rem; color: var(--parchment-dk);
+      opacity: .28; font-style: italic; font-size: .72rem; letter-spacing: .12em;
+    }
+    .site-footer p + p { margin-top: .3rem; }
+
+    @media (max-width: 480px) {
+      .thumb-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: .7rem; }
+      .section-tabs { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════ HOME SCREEN ══════════════════ -->
+<div id="screen-home" class="screen active">
+  <div class="home-hero">
+    <p class="home-ornament">◆ &nbsp; ◆ &nbsp; ◆</p>
+    <h1 class="home-title">CHOOSE YOUR POISON</h1>
+    <p class="home-subtitle">Est. 1923 &mdash; A Clandestine Collection of Fine Libations</p>
+    <div class="deco-divider"><span class="deco-diamond">◆ &thinsp; ◇ &thinsp; ◆</span></div>
+  </div>
+
+  <div class="home-cards">
+    <!-- The Classics -->
+    <button class="home-card" onclick="setSection('classics')">
+      <div class="paper-texture"></div>
+      <span class="home-card-corner">◆</span>
+      <div class="home-card-icon">
+        <svg viewBox="0 0 72 84" fill="none" stroke="#a07830" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg" width="72" height="84">
+          <path d="M 6,22 Q 14,56 36,62 Q 58,56 66,22 Z" fill="rgba(160,120,48,.15)"/>
+          <path d="M 6,22 Q 14,56 36,62 Q 58,56 66,22" stroke-width="1.3"/>
+          <line x1="3" y1="22" x2="69" y2="22" stroke-width="1.3"/>
+          <line x1="36" y1="62" x2="36" y2="76" stroke-width="1.3"/>
+          <line x1="20" y1="76" x2="52" y2="76" stroke-width="1.8"/>
+          <line x1="22" y1="80" x2="50" y2="80" stroke-width=".9" opacity=".5"/>
+          <circle cx="36" cy="10" r="3" fill="#a07830" opacity=".6"/>
+          <line x1="20" y1="10" x2="30" y2="10" stroke-width=".8" opacity=".5"/>
+          <line x1="42" y1="10" x2="52" y2="10" stroke-width=".8" opacity=".5"/>
+        </svg>
+      </div>
+      <div class="home-card-divider"></div>
+      <h2 class="home-card-title">The Classics</h2>
+      <p class="home-card-sub">15 enduring libations</p>
+    </button>
+
+    <!-- By the Bottle -->
+    <button class="home-card" onclick="setSection('by-bottle')">
+      <div class="paper-texture"></div>
+      <span class="home-card-corner">◆</span>
+      <div class="home-card-icon">
+        <svg viewBox="0 0 54 96" fill="none" stroke="#a07830" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" width="54" height="96">
+          <path d="M 22,8 L 22,22 Q 10,32 9,46 L 9,82 Q 9,90 27,90 Q 45,90 45,82 L 45,46 Q 44,32 32,22 L 32,8 Z" fill="rgba(160,120,48,.15)" stroke-width="1.3"/>
+          <line x1="18" y1="8" x2="36" y2="8" stroke-width="1.8"/>
+          <rect x="13" y="54" width="28" height="18" rx="1" stroke-width=".85" opacity=".65"/>
+          <line x1="16" y1="60" x2="38" y2="60" stroke-width=".65" opacity=".55"/>
+          <line x1="18" y1="64" x2="36" y2="64" stroke-width=".55" opacity=".45"/>
+        </svg>
+      </div>
+      <div class="home-card-divider"></div>
+      <h2 class="home-card-title">By the Bottle</h2>
+      <p class="home-card-sub">42 drinks by spirit</p>
+    </button>
+
+    <!-- My Cabinet -->
+    <button class="home-card" onclick="setSection('cabinet')">
+      <div class="paper-texture"></div>
+      <span class="home-card-corner">◆</span>
+      <div class="home-card-icon">
+        <svg viewBox="0 0 72 68" fill="none" stroke="#a07830" xmlns="http://www.w3.org/2000/svg" width="72" height="68">
+          <path d="M 36,62 C 8,46 2,32 2,20 C 2,10 12,6 22,12 C 28,16 33,22 36,28 C 39,22 44,16 50,12 C 60,6 70,10 70,20 C 70,32 64,46 36,62 Z" fill="rgba(92,26,26,.3)" stroke-width="1.3" stroke-linejoin="round"/>
+          <path d="M 36,50 C 18,38 14,28 14,20 C 14,15 18,13 22,16 C 28,20 33,26 36,31 C 39,26 44,20 50,16 C 54,13 58,15 58,20 C 58,28 54,38 36,50 Z" fill="rgba(92,26,26,.18)" stroke-width=".7" stroke-linejoin="round" opacity=".65"/>
+        </svg>
+      </div>
+      <div class="home-card-divider"></div>
+      <h2 class="home-card-title">My Cabinet</h2>
+      <p class="home-card-sub">Your saved favourites</p>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════ SECTION SCREEN ══════════════════ -->
+<div id="screen-section" class="screen">
+  <!-- Sticky top bar -->
+  <div class="section-bar">
+    <button class="back-btn" onclick="goHome()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+      Menu
+    </button>
+    <nav class="section-tabs" id="section-tabs">
+      <button class="section-tab" data-s="classics" onclick="setSection('classics')">The Classics</button>
+      <button class="section-tab" data-s="by-bottle" onclick="setSection('by-bottle')">By the Bottle</button>
+      <button class="section-tab" data-s="cabinet" onclick="setSection('cabinet')">My Cabinet</button>
+    </nav>
+    <div class="search-wrap">
+      <input id="searchInput" class="search-input" type="text" placeholder="Search&hellip;" autocomplete="off" spellcheck="false">
+      <span class="search-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </span>
+    </div>
+  </div>
+
+  <!-- Spirit tabs (by-bottle only) -->
+  <div id="spirit-tabs-wrap" style="display:none">
+    <div class="spirit-tabs" id="spirit-tabs"></div>
+  </div>
+
+  <!-- Section title -->
+  <div class="section-heading">
+    <div class="deco-divider" style="margin-bottom:.4rem"><span class="deco-diamond">◇</span></div>
+    <h2 class="section-title" id="section-title"></h2>
+    <div class="deco-divider" style="margin-top:.4rem"><span class="deco-diamond">◇</span></div>
+  </div>
+
+  <!-- Thumbnails -->
+  <div class="thumb-grid" id="thumb-grid"></div>
+</div>
+
+<!-- ══════════════════ MODAL ══════════════════ -->
+<div id="modal-backdrop" class="modal-backdrop" onclick="closeModal()"></div>
+<div id="modal" class="modal" role="dialog" aria-modal="true">
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <div class="modal-inner">
+    <div class="modal-left">
+      <div class="modal-glass-wrap" id="modal-glass"></div>
+      <button class="modal-fav-btn" id="modal-fav-btn" onclick="toggleModalFav()">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+        Save
+      </button>
+    </div>
+    <div class="modal-right" id="modal-recipe"></div>
+  </div>
+</div>
+
+<footer class="site-footer" id="site-footer" style="display:none">
+  <p>Drink responsibly &mdash; know your measure &mdash; respect the craft.</p>
+  <p>◆ &nbsp; Est. 1923 &nbsp; ◆</p>
+</footer>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   COCKTAIL DATA
+════════════════════════════════════════════════════════ */
+const COCKTAILS = [
+
+  /* ── CLASSICS ── */
+  {
+    id:'margarita', name:'Margarita', section:'classics', category:'tequila',
+    glassType:'rocks', liquidColor:'rgba(210,230,160,.75)',
+    glass:'Rocks glass or coupe',
+    ingredients:['2 oz Blanco Tequila','1 oz Fresh Lime Juice','¾ oz Cointreau or Triple Sec','Kosher salt for rimming'],
+    method:['Rim the glass with lime juice and salt.','Combine tequila, lime juice, and Cointreau in a shaker with ice.','Shake vigorously for 12–15 seconds.','Strain over fresh ice into the prepared glass.'],
+    garnish:'Lime wheel on the rim',
+    note:'Perhaps the most debated cocktail in the Americas — its exact origin is lost somewhere in the 1930s, but its grip on the drinking public remains ironclad.'
+  },
+  {
+    id:'mojito', name:'Mojito', section:'classics', category:'rum',
+    glassType:'highball', liquidColor:'rgba(195,235,185,.6)',
+    glass:'Highball glass',
+    ingredients:['2 oz White Rum','1 oz Fresh Lime Juice','¾ oz Simple Syrup','8–10 Fresh Mint Leaves','Soda Water, to top'],
+    method:['Gently muddle mint with lime juice and syrup in the glass.','Add rum and fill with crushed ice.','Top with soda water and stir briefly.','Pack with more crushed ice if needed.'],
+    garnish:'Mint sprig and lime wheel',
+    note:'A Cuban institution, born in Havana and beloved by writers and rogue travellers on every latitude.'
+  },
+  {
+    id:'old-fashioned', name:'Old Fashioned', section:'classics', category:'whiskey',
+    glassType:'rocks', liquidColor:'rgba(160,88,28,.72)',
+    glass:'Rocks glass',
+    ingredients:['2 oz Bourbon or Rye Whiskey','1 tsp Rich Simple Syrup (2:1)','2 dashes Angostura Bitters','1 dash Orange Bitters'],
+    method:['Combine syrup and bitters in a rocks glass.','Add whiskey and a large ice cube.','Stir slowly for 20–30 seconds.','Express an orange peel over the glass and nestle it in as garnish.'],
+    garnish:'Orange peel, expressed and dropped',
+    note:'The granddaddy of all cocktails. When someone asks for "a cocktail," this is what they ought to mean.'
+  },
+  {
+    id:'negroni', name:'Negroni', section:'classics', category:'gin',
+    glassType:'rocks', liquidColor:'rgba(200,50,22,.78)',
+    glass:'Rocks glass',
+    ingredients:['1 oz London Dry Gin','1 oz Sweet Vermouth','1 oz Campari'],
+    method:['Combine all ingredients in a mixing glass with ice.','Stir for 25–30 seconds until well chilled.','Strain over a large ice cube.','Express an orange peel over the surface.'],
+    garnish:'Orange peel or slice',
+    note:'Created in 1919 when Count Camillo Negroni demanded something stronger than his Americano. He was correct.'
+  },
+  {
+    id:'daiquiri', name:'Daiquiri', section:'classics', category:'rum',
+    glassType:'coupe', liquidColor:'rgba(240,245,215,.68)',
+    glass:'Coupe glass',
+    ingredients:['2 oz White Rum','¾ oz Fresh Lime Juice','¾ oz Simple Syrup'],
+    method:['Combine all ingredients in a shaker with ice.','Shake hard for 12–15 seconds.','Double-strain into a chilled coupe glass.'],
+    garnish:'Lime wheel or naked',
+    note:'Named after a Cuban beach and perfected in a Havana hotel. Simple, honest, and nearly impossible to improve upon.'
+  },
+  {
+    id:'manhattan', name:'Manhattan', section:'classics', category:'whiskey',
+    glassType:'coupe', liquidColor:'rgba(148,58,26,.72)',
+    glass:'Coupe or cocktail glass',
+    ingredients:['2 oz Rye or Bourbon Whiskey','1 oz Sweet Vermouth','2 dashes Angostura Bitters'],
+    method:['Combine all in a mixing glass with ice.','Stir for 25–30 seconds.','Strain into a chilled coupe.','Garnish and serve.'],
+    garnish:'Maraschino cherry or lemon twist',
+    note:'Allegedly born at the Manhattan Club, 1874. The city named a cocktail after itself. Naturally.'
+  },
+  {
+    id:'dry-martini', name:'Dry Martini', section:'classics', category:'gin',
+    glassType:'martini', liquidColor:'rgba(238,245,225,.5)',
+    glass:'Martini or coupe glass',
+    ingredients:['2½ oz London Dry Gin','½ oz Dry Vermouth','1 dash Orange Bitters (optional)'],
+    method:['Chill the glass with ice water; discard.','Combine gin and vermouth in a mixing glass with ice.','Stir for 30 seconds until very cold.','Strain into the chilled glass; express a lemon peel over the surface.'],
+    garnish:'Lemon twist or green olive',
+    note:'The subject of more heated debate than any other drink in recorded history. Stirred. Always stirred.'
+  },
+  {
+    id:'whiskey-sour', name:'Whiskey Sour', section:'classics', category:'whiskey',
+    glassType:'rocks', liquidColor:'rgba(210,168,78,.72)',
+    glass:'Rocks glass',
+    ingredients:['2 oz Bourbon Whiskey','¾ oz Fresh Lemon Juice','¾ oz Simple Syrup','1 Egg White (optional, recommended)'],
+    method:['If using egg white, dry-shake all ingredients without ice for 10 seconds.','Add ice; shake hard for 15 seconds.','Strain over fresh ice.','Dot Angostura bitters on the foam.'],
+    garnish:'Orange slice and a cherry',
+    note:'A sour is not a dumbed-down cocktail — it is the template upon which half the canon is built.'
+  },
+  {
+    id:'moscow-mule', name:'Moscow Mule', section:'classics', category:'vodka',
+    glassType:'mug', liquidColor:'rgba(225,242,195,.65)',
+    glass:'Copper mug',
+    ingredients:['2 oz Vodka','½ oz Fresh Lime Juice','4–5 oz Ginger Beer'],
+    method:['Fill a copper mug with crushed or cubed ice.','Add vodka and lime juice.','Top with ginger beer; stir gently.'],
+    garnish:'Lime wedge and fresh mint',
+    note:"Invented in 1941 to sell vodka at a time Americans weren't buying. The copper mug was a masterstroke of marketing."
+  },
+  {
+    id:'aperol-spritz', name:'Aperol Spritz', section:'classics', category:'other',
+    glassType:'wine', liquidColor:'rgba(228,108,35,.6)',
+    glass:'Large wine glass',
+    ingredients:['3 oz Prosecco','2 oz Aperol','1 oz Soda Water'],
+    method:['Fill a large wine glass with ice.','Pour Prosecco, then Aperol.','Add a splash of soda water; stir gently once.'],
+    garnish:'Orange slice',
+    note:"Italy's unofficial national aperitivo. Light, bittersweet, and perfectly suited to long afternoons you'd rather not end."
+  },
+  {
+    id:'cosmopolitan', name:'Cosmopolitan', section:'classics', category:'vodka',
+    glassType:'martini', liquidColor:'rgba(208,58,85,.65)',
+    glass:'Martini glass',
+    ingredients:['1½ oz Citrus Vodka','½ oz Cointreau','¾ oz Fresh Lime Juice','¼ oz Cranberry Juice'],
+    method:['Combine all in a shaker with ice.','Shake hard for 12–15 seconds.','Double-strain into a chilled martini glass.'],
+    garnish:'Flamed orange peel',
+    note:'Maligned by snobs and beloved by the world. Perfectly balanced, perfectly pink. There is no shame in ordering one.'
+  },
+  {
+    id:'gimlet', name:'Gimlet', section:'classics', category:'gin',
+    glassType:'coupe', liquidColor:'rgba(192,232,155,.68)',
+    glass:'Coupe or martini glass',
+    ingredients:['2 oz Gin','¾ oz Fresh Lime Juice','¾ oz Simple Syrup'],
+    method:['Combine all in a shaker with ice.','Shake well for 12–15 seconds.','Double-strain into a chilled coupe.'],
+    garnish:'Lime wheel',
+    note:"Raymond Chandler's Philip Marlowe drank them religiously. He insisted on Rose's lime. He was wrong, but memorably so."
+  },
+  {
+    id:'sidecar', name:'Sidecar', section:'classics', category:'brandy',
+    glassType:'coupe', liquidColor:'rgba(218,178,78,.68)',
+    glass:'Coupe glass',
+    ingredients:['1½ oz Cognac','¾ oz Cointreau','¾ oz Fresh Lemon Juice','Sugar for rimming (optional)'],
+    method:['Rim the glass with sugar if desired.','Combine all in a shaker with ice.','Shake well for 12–15 seconds.','Double-strain into the chilled coupe.'],
+    garnish:'Orange peel',
+    note:'A post-WWI Parisian invention, named for the motorcycle attachment favoured by a certain American officer who required considerable encouragement to dismount.'
+  },
+  {
+    id:'tom-collins', name:'Tom Collins', section:'classics', category:'gin',
+    glassType:'highball', liquidColor:'rgba(228,242,195,.62)',
+    glass:'Collins glass',
+    ingredients:['2 oz London Dry Gin','1 oz Fresh Lemon Juice','½ oz Simple Syrup','3–4 oz Soda Water'],
+    method:['Combine gin, lemon juice, and syrup in a shaker with ice.','Shake briefly; strain into a tall glass over fresh ice.','Top with soda water; stir gently.'],
+    garnish:'Lemon slice and maraschino cherry',
+    note:'A 19th-century classic that inspired an elaborate hoax in 1874 — strangers would warn acquaintances that "Tom Collins" was speaking ill of them across town.'
+  },
+  {
+    id:'penicillin', name:'Penicillin', section:'classics', category:'whiskey',
+    glassType:'rocks', liquidColor:'rgba(188,152,62,.72)',
+    glass:'Rocks glass',
+    ingredients:['2 oz Blended Scotch Whisky','¾ oz Fresh Lemon Juice','¾ oz Honey-Ginger Syrup','¼ oz Islay Single Malt (float)'],
+    method:['Combine blended Scotch, lemon juice, and honey-ginger syrup in a shaker with ice.','Shake hard for 15 seconds.','Strain over a large ice cube.','Float the Islay Scotch over the back of a spoon.'],
+    garnish:'Candied ginger on a pick',
+    note:'Invented by Sam Ross at Milk & Honey, New York, 2005. Smoky, sweet, medicinal — a cure for whatever ails you.'
+  },
+
+  /* ── WHISKEY / BOURBON ── */
+  {
+    id:'blood-and-sand', name:'Blood and Sand', section:'by-bottle', category:'whiskey',
+    glassType:'coupe', liquidColor:'rgba(212,55,38,.75)',
+    glass:'Coupe glass',
+    ingredients:['¾ oz Scotch Whisky','¾ oz Cherry Heering','¾ oz Sweet Vermouth','¾ oz Fresh Orange Juice'],
+    method:['Combine all in a shaker with ice.','Shake for 12 seconds.','Double-strain into a chilled coupe.'],
+    garnish:'Expressed orange peel',
+    note:'Named for the 1922 Rudolph Valentino film. An equal-parts wonder with no right to taste as good as it does.'
+  },
+  {
+    id:'boulevardier', name:'Boulevardier', section:'by-bottle', category:'whiskey',
+    glassType:'rocks', liquidColor:'rgba(172,46,26,.8)',
+    glass:'Rocks glass or coupe',
+    ingredients:['1½ oz Bourbon','1 oz Sweet Vermouth','1 oz Campari'],
+    method:['Combine all in a mixing glass with ice.','Stir for 25 seconds.','Strain over a large ice cube or into a chilled coupe.'],
+    garnish:'Orange peel or cherry',
+    note:'A Negroni with bourbon standing in for gin. Created by Erskine Gwynne, a wealthy American expat in 1920s Paris. Decadent by design.'
+  },
+  {
+    id:'brown-derby', name:'Brown Derby', section:'by-bottle', category:'whiskey',
+    glassType:'coupe', liquidColor:'rgba(222,155,78,.72)',
+    glass:'Coupe glass',
+    ingredients:['2 oz Bourbon','1 oz Fresh Grapefruit Juice','½ oz Honey Syrup'],
+    method:['Combine all in a shaker with ice.','Shake for 12 seconds.','Double-strain into a chilled coupe.'],
+    garnish:'Grapefruit twist',
+    note:'Named for the famous 1930s Hollywood restaurant. Bourbon and grapefruit is a union that deserves considerably more acclaim.'
+  },
+  {
+    id:'gold-rush', name:'Gold Rush', section:'by-bottle', category:'whiskey',
+    glassType:'rocks', liquidColor:'rgba(212,172,55,.75)',
+    glass:'Rocks glass',
+    ingredients:['2 oz Bourbon','¾ oz Fresh Lemon Juice','¾ oz Honey Syrup (2 honey : 1 water)'],
+    method:['Combine all in a shaker with ice.','Shake hard for 12–15 seconds.','Strain over a large ice cube.'],
+    garnish:'Lemon peel',
+    note:'Another Milk & Honey classic. Proof that the finest cocktails come from restraint. Three ingredients; endless pleasure.'
+  },
+  {
+    id:'paper-plane', name:'Paper Plane', section:'by-bottle', category:'whiskey',
+    glassType:'coupe', liquidColor:'rgba(222,152,48,.75)',
+    glass:'Coupe glass',
+    ingredients:['¾ oz Bourbon','¾ oz Aperol','¾ oz Amaro Nonino','¾ oz Fresh Lemon Juice'],
+    method:['Combine all in a shaker with ice.','Shake for 12 seconds.','Double-strain into a chilled coupe.'],
+    garnish:'No garnish',
+    note:"Created by Sam Ross in 2007, named after an M.I.A. song. Four equal parts, impeccable balance — modern perfection."
+  },
+  {
+    id:'rob-roy', name:'Rob Roy', section:'by-bottle', category:'whiskey',
+    glassType:'coupe', liquidColor:'rgba(152,55,26,.8)',
+    glass:'Coupe glass',
+    ingredients:['2 oz Scotch Whisky','1 oz Sweet Vermouth','2 dashes Angostura Bitters'],
+    method:['Combine all in a mixing glass with ice.','Stir for 25–30 seconds.','Strain into a chilled coupe.'],
+    garnish:'Maraschino cherry or lemon twist',
+    note:"The Manhattan's Scottish cousin. Named for the 1894 operetta celebrating a Highland folk hero."
+  },
+
+  /* ── VODKA ── */
+  {
+    id:'black-russian', name:'Black Russian', section:'by-bottle', category:'vodka',
+    glassType:'rocks', liquidColor:'rgba(35,18,8,.9)',
+    glass:'Rocks glass',
+    ingredients:['2 oz Vodka','1 oz Coffee Liqueur (Kahlúa)'],
+    method:['Fill a rocks glass with ice.','Pour in vodka, then Kahlúa.','Stir briefly.'],
+    garnish:'None',
+    note:'Created at the Hotel Métropole in Brussels in 1949. Two ingredients, zero pretension, maximum satisfaction.'
+  },
+  {
+    id:'bloody-mary', name:'Bloody Mary', section:'by-bottle', category:'vodka',
+    glassType:'highball', liquidColor:'rgba(172,28,28,.78)',
+    glass:'Highball or pint glass',
+    ingredients:['2 oz Vodka','4 oz Tomato Juice','½ oz Fresh Lemon Juice','2 dashes Tabasco','2 dashes Worcestershire Sauce','Salt, Pepper & Celery Salt to taste'],
+    method:['Combine all in a shaker with ice.','Roll gently between shaker tins rather than shaking.','Pour into a tall glass over fresh ice.','Adjust seasoning.'],
+    garnish:'Celery stalk, lemon wedge, olive',
+    note:"The greatest argument for vodka's existence. Said to cure hangovers by the hair of the dog that bit you."
+  },
+  {
+    id:'espresso-martini', name:'Espresso Martini', section:'by-bottle', category:'vodka',
+    glassType:'martini', liquidColor:'rgba(32,15,6,.88)',
+    glass:'Martini or coupe glass',
+    ingredients:['2 oz Vodka','1 oz Fresh Espresso (cooled)','½ oz Coffee Liqueur (Kahlúa)','¼ oz Simple Syrup'],
+    method:['Combine all in a shaker with ice.','Shake hard for 15–20 seconds — the vigour creates the foam.','Double-strain into a chilled glass.'],
+    garnish:'Three coffee beans',
+    note:'Created by Dick Bradsell in London, circa 1983, after a model requested something to "wake me up and then f*** me up." He obliged magnificently.'
+  },
+  {
+    id:'harvey-wallbanger', name:'Harvey Wallbanger', section:'by-bottle', category:'vodka',
+    glassType:'highball', liquidColor:'rgba(235,152,35,.8)',
+    glass:'Highball glass',
+    ingredients:['1½ oz Vodka','4 oz Fresh Orange Juice','½ oz Galliano'],
+    method:['Build vodka and orange juice in a tall glass over ice.','Stir gently.','Float Galliano over the top.'],
+    garnish:'Orange slice and cherry',
+    note:"Named for a California surfer who, after losing a competition, drowned his sorrows in these until he was bouncing off the walls. A cautionary tale."
+  },
+  {
+    id:'lemon-drop', name:'Lemon Drop', section:'by-bottle', category:'vodka',
+    glassType:'martini', liquidColor:'rgba(238,238,155,.8)',
+    glass:'Martini glass',
+    ingredients:['2 oz Citrus Vodka','¾ oz Cointreau','¾ oz Fresh Lemon Juice','¼ oz Simple Syrup'],
+    method:['Rim the glass with sugar.','Combine all in a shaker with ice.','Shake for 12 seconds.','Double-strain into the prepared glass.'],
+    garnish:'Sugared rim and lemon wheel',
+    note:'A San Francisco invention from the 1970s. Crisp, bright, and unapologetically festive.'
+  },
+  {
+    id:'white-russian', name:'White Russian', section:'by-bottle', category:'vodka',
+    glassType:'rocks', liquidColor:'rgba(212,192,162,.85)',
+    glass:'Rocks glass',
+    ingredients:['2 oz Vodka','1 oz Coffee Liqueur (Kahlúa)','1 oz Heavy Cream'],
+    method:['Fill a rocks glass with ice.','Pour in vodka, then coffee liqueur.','Float cream over the back of a spoon.','Stir gently before drinking — or don\'t.'],
+    garnish:'None required',
+    note:'The Dude abides. Forever associated with the 1998 Coen Brothers film that gave it a cult following no marketing budget could purchase.'
+  },
+
+  /* ── GIN ── */
+  {
+    id:'aviation', name:'Aviation', section:'by-bottle', category:'gin',
+    glassType:'coupe', liquidColor:'rgba(172,155,215,.68)',
+    glass:'Coupe glass',
+    ingredients:['2 oz Gin','½ oz Maraschino Liqueur','¼ oz Crème de Violette','¾ oz Fresh Lemon Juice'],
+    method:['Combine all in a shaker with ice.','Shake for 12 seconds.','Double-strain into a chilled coupe.'],
+    garnish:'Maraschino cherry',
+    note:'A delicate sky-blue cocktail from the early 20th century. For decades the Crème de Violette was omitted, taking the colour — and much of the soul — with it.'
+  },
+  {
+    id:'bees-knees', name:"Bee's Knees", section:'by-bottle', category:'gin',
+    glassType:'coupe', liquidColor:'rgba(235,225,152,.8)',
+    glass:'Coupe glass',
+    ingredients:['2 oz Gin','¾ oz Fresh Lemon Juice','¾ oz Honey Syrup'],
+    method:['Combine all in a shaker with ice.','Shake well for 12–15 seconds.','Double-strain into a chilled coupe.'],
+    garnish:'Lemon twist',
+    note:"A Prohibition-era original. The honey masked the bite of bathtub gin. Now that gin is excellent, the honey simply makes it better."
+  },
+  {
+    id:'clover-club', name:'Clover Club', section:'by-bottle', category:'gin',
+    glassType:'coupe', liquidColor:'rgba(212,112,132,.75)',
+    glass:'Coupe glass',
+    ingredients:['2 oz Gin','½ oz Fresh Lemon Juice','½ oz Raspberry Syrup','1 Egg White'],
+    method:['Dry-shake all without ice for 10 seconds.','Add ice; shake hard for 15 seconds.','Double-strain into a chilled coupe.'],
+    garnish:'Three fresh raspberries',
+    note:"A pre-Prohibition survivor from the Clover Club — a Philadelphia gentlemen's supper club. Pink, silky, quietly devastating."
+  },
+  {
+    id:'corpse-reviver-2', name:'Corpse Reviver №2', section:'by-bottle', category:'gin',
+    glassType:'coupe', liquidColor:'rgba(212,225,192,.72)',
+    glass:'Coupe glass',
+    ingredients:['¾ oz Gin','¾ oz Cointreau','¾ oz Lillet Blanc','¾ oz Fresh Lemon Juice','Absinthe rinse'],
+    method:['Rinse a chilled coupe with absinthe; discard excess.','Combine remaining ingredients in a shaker with ice.','Shake for 12 seconds.','Double-strain into the prepared coupe.'],
+    garnish:'Lemon twist',
+    note:'From the Savoy Cocktail Book, 1930: "Four of these taken in swift succession will unrevive the corpse again." You have been warned.'
+  },
+  {
+    id:'french-75', name:'French 75', section:'by-bottle', category:'gin',
+    glassType:'flute', liquidColor:'rgba(235,238,192,.7)',
+    glass:'Champagne flute or coupe',
+    ingredients:['1 oz London Dry Gin','½ oz Fresh Lemon Juice','½ oz Simple Syrup','Champagne, to top'],
+    method:['Combine gin, lemon, and syrup in a shaker with ice.','Shake for 10 seconds.','Double-strain into a flute.','Top with chilled Champagne.'],
+    garnish:'Lemon twist',
+    note:'Named after a French 75mm field gun — the kick was said to feel comparable. Created at the New York Bar in Paris, 1915.'
+  },
+  {
+    id:'last-word', name:'Last Word', section:'by-bottle', category:'gin',
+    glassType:'coupe', liquidColor:'rgba(172,218,152,.8)',
+    glass:'Coupe glass',
+    ingredients:['¾ oz Gin','¾ oz Green Chartreuse','¾ oz Maraschino Liqueur','¾ oz Fresh Lime Juice'],
+    method:['Combine all in a shaker with ice.','Shake for 12 seconds.','Double-strain into a chilled coupe.'],
+    garnish:'Brandied cherry',
+    note:'Created at the Detroit Athletic Club during Prohibition. Lost for decades, rediscovered by Murray Stenson in Seattle in 2004. Worth every year it waited.'
+  },
+
+  /* ── RUM ── */
+  {
+    id:'dark-n-stormy', name:"Dark 'n' Stormy", section:'by-bottle', category:'rum',
+    glassType:'highball', liquidColor:'rgba(92,52,15,.85)',
+    glass:'Highball glass',
+    ingredients:["2 oz Gosling's Black Seal Rum",'4–5 oz Ginger Beer','½ oz Fresh Lime Juice'],
+    method:['Fill a highball glass with ice.','Add lime juice and ginger beer.','Float the rum over the back of a spoon.'],
+    garnish:'Lime wedge',
+    note:"Technically a registered trademark of Gosling's Brothers of Bermuda — the only cocktail with a legitimate intellectual property claim."
+  },
+  {
+    id:'el-presidente', name:'El Presidente', section:'by-bottle', category:'rum',
+    glassType:'coupe', liquidColor:'rgba(212,172,132,.75)',
+    glass:'Coupe glass',
+    ingredients:['2 oz White Rum','¾ oz Dry Vermouth','¼ oz Orange Curaçao','1 tsp Grenadine'],
+    method:['Combine all in a mixing glass with ice.','Stir for 25 seconds.','Strain into a chilled coupe.'],
+    garnish:'Orange peel',
+    note:"A Cuban cocktail from the 1920s. The original party drink of Havana's gilded age."
+  },
+  {
+    id:'jungle-bird', name:'Jungle Bird', section:'by-bottle', category:'rum',
+    glassType:'tiki', liquidColor:'rgba(172,55,26,.8)',
+    glass:'Tiki mug or rocks glass',
+    ingredients:['1½ oz Dark Rum','¾ oz Campari','1½ oz Fresh Pineapple Juice','½ oz Fresh Lime Juice','½ oz Simple Syrup'],
+    method:['Combine all in a shaker with ice.','Shake for 12 seconds.','Strain over crushed ice.'],
+    garnish:'Pineapple wedge and leaf',
+    note:'Created at the Kuala Lumpur Hilton, 1978. The Campari-rum combination sounds unlikely; the drink is extraordinary.'
+  },
+  {
+    id:'mai-tai', name:'Mai Tai', section:'by-bottle', category:'rum',
+    glassType:'tiki', liquidColor:'rgba(212,112,35,.8)',
+    glass:'Double rocks or tiki glass',
+    ingredients:['1½ oz Aged Jamaican Rum','½ oz Rhum Agricole','½ oz Orange Curaçao','¼ oz Orgeat','¾ oz Fresh Lime Juice'],
+    method:['Combine all in a shaker with crushed ice.','Shake briefly and pour everything unstrained into the glass.','Top with more crushed ice.','Garnish elaborately — it demands it.'],
+    garnish:'Mint sprig, spent lime shell, and orchid',
+    note:'Created by Trader Vic, 1944. His Tahitian friends cried "Mai Tai — Roa Ae!" — meaning "Out of this world, the best!"'
+  },
+  {
+    id:'painkiller', name:'Painkiller', section:'by-bottle', category:'rum',
+    glassType:'tiki', liquidColor:'rgba(235,172,75,.8)',
+    glass:'Tiki mug or highball',
+    ingredients:["2 oz Navy Rum (Pusser's preferred)",'4 oz Pineapple Juice','1 oz Cream of Coconut','1 oz Fresh Orange Juice'],
+    method:['Combine all in a shaker with ice.','Shake well for 15 seconds.','Strain over crushed ice in a tiki mug.'],
+    garnish:'Freshly grated nutmeg and pineapple chunk',
+    note:"Born on Jost Van Dyke island in the British Virgin Islands. Pusser's Rum holds the trademark. A proprietary marvel of the Caribbean."
+  },
+  {
+    id:'three-dots', name:'Three Dots and a Dash', section:'by-bottle', category:'rum',
+    glassType:'tiki', liquidColor:'rgba(172,112,35,.8)',
+    glass:'Tiki mug or Collins glass',
+    ingredients:['¾ oz Rhum Agricole','¾ oz Aged Rum','½ oz Fresh Lime Juice','½ oz Fresh Orange Juice','½ oz Honey Syrup','¼ oz Falernum','1 dash Angostura Bitters','1 dash Allspice Dram'],
+    method:['Combine all in a shaker with crushed ice.','Flash blend or shake and pour over crushed ice.'],
+    garnish:'Three cherries (· · ·) and a pineapple chunk (—) — Morse code for V',
+    note:"Created by Don the Beachcomber to celebrate WWII victory. The garnish is Morse code for 'V.' The drink is itself a small triumph."
+  },
+
+  /* ── TEQUILA / MEZCAL ── */
+  {
+    id:'mezcal-negroni', name:'Mezcal Negroni', section:'by-bottle', category:'tequila',
+    glassType:'rocks', liquidColor:'rgba(172,46,26,.8)',
+    glass:'Rocks glass',
+    ingredients:['1 oz Mezcal','1 oz Sweet Vermouth','1 oz Campari'],
+    method:['Combine all in a mixing glass with ice.','Stir for 25 seconds.','Strain over a large ice cube.'],
+    garnish:'Orange peel',
+    note:"The classic Negroni remade with mezcal's smoke threading through the bitter-sweet structure. Both familiar and startling at once."
+  },
+  {
+    id:'naked-and-famous', name:'Naked and Famous', section:'by-bottle', category:'tequila',
+    glassType:'coupe', liquidColor:'rgba(222,125,46,.75)',
+    glass:'Coupe glass',
+    ingredients:['¾ oz Mezcal','¾ oz Yellow Chartreuse','¾ oz Aperol','¾ oz Fresh Lime Juice'],
+    method:['Combine all in a shaker with ice.','Shake for 12 seconds.','Double-strain into a chilled coupe.'],
+    garnish:'None',
+    note:"The spiritual successor to the Paper Plane, created by Joaquín Simó at Death & Co. Four equal parts, smoky agave swagger."
+  },
+  {
+    id:'oaxacan-old-fashioned', name:'Oaxacan Old Fashioned', section:'by-bottle', category:'tequila',
+    glassType:'rocks', liquidColor:'rgba(152,85,26,.8)',
+    glass:'Rocks glass',
+    ingredients:['1½ oz Reposado Tequila','½ oz Mezcal','1 tsp Agave Nectar','2 dashes Mole Bitters (or Angostura)'],
+    method:['Combine all in a rocks glass.','Add a large ice cube; stir for 20 seconds.','Express a flamed orange peel over the surface.'],
+    garnish:'Flamed orange peel',
+    note:"Phil Ward's landmark creation at Death & Co., New York, 2007. It taught an entire generation that mezcal belonged in serious cocktails."
+  },
+  {
+    id:'paloma', name:'Paloma', section:'by-bottle', category:'tequila',
+    glassType:'highball', liquidColor:'rgba(225,132,112,.7)',
+    glass:'Highball or Collins glass',
+    ingredients:['2 oz Blanco Tequila','½ oz Fresh Lime Juice','Grapefruit soda (Jarritos or Squirt) to top','Pinch of salt'],
+    method:['Salt the rim if desired.','Add tequila and lime juice to a tall glass over ice.','Top with grapefruit soda.','Add a pinch of salt; stir gently.'],
+    garnish:'Grapefruit wedge',
+    note:"Mexico's most beloved cocktail — arguably more popular than the Margarita at home. The name means \"dove.\" It arrives in peace."
+  },
+  {
+    id:'spicy-margarita', name:'Spicy Margarita', section:'by-bottle', category:'tequila',
+    glassType:'rocks', liquidColor:'rgba(212,78,55,.7)',
+    glass:'Rocks glass',
+    ingredients:['2 oz Blanco Tequila','1 oz Fresh Lime Juice','¾ oz Cointreau','3–5 Slices Fresh Jalapeño','Chili-salt rim'],
+    method:['Muddle jalapeño in the shaker (3 for medium, 5 for serious heat).','Add remaining ingredients and ice.','Shake hard for 15 seconds.','Double-strain into a chili-salt rimmed glass over fresh ice.'],
+    garnish:'Lime wheel and jalapeño slice',
+    note:'The heat from fresh jalapeño is immediate, honest, and transformative. Adjust the pepper count to your conviction.'
+  },
+  {
+    id:'tommys-margarita', name:"Tommy's Margarita", section:'by-bottle', category:'tequila',
+    glassType:'rocks', liquidColor:'rgba(212,232,168,.75)',
+    glass:'Rocks glass',
+    ingredients:['2 oz 100% Agave Tequila','1 oz Fresh Lime Juice','½ oz Agave Nectar'],
+    method:['Combine all in a shaker with ice.','Shake hard for 15 seconds.','Strain over fresh ice.'],
+    garnish:'Lime wedge, no salt',
+    note:"Created by Julio Bermejo at Tommy's Mexican Restaurant, San Francisco, in the 1990s. The agave nectar lets the tequila's terroir speak for itself."
+  },
+
+  /* ── BRANDY / COGNAC ── */
+  {
+    id:'between-the-sheets', name:'Between the Sheets', section:'by-bottle', category:'brandy',
+    glassType:'coupe', liquidColor:'rgba(232,212,152,.75)',
+    glass:'Coupe glass',
+    ingredients:['1 oz Cognac','1 oz White Rum','1 oz Cointreau','½ oz Fresh Lemon Juice'],
+    method:['Combine all in a shaker with ice.','Shake for 12 seconds.','Double-strain into a chilled coupe.'],
+    garnish:'Lemon twist',
+    note:'A 1920s Parisian invention of somewhat scandalous name. Essentially a Sidecar with rum added. The name sells it; the cocktail delivers.'
+  },
+  {
+    id:'brandy-alexander', name:'Brandy Alexander', section:'by-bottle', category:'brandy',
+    glassType:'coupe', liquidColor:'rgba(212,172,132,.85)',
+    glass:'Coupe glass',
+    ingredients:['1½ oz Cognac','1 oz Brown Crème de Cacao','1 oz Heavy Cream'],
+    method:['Combine all in a shaker with ice.','Shake well for 15 seconds.','Double-strain into a chilled coupe.'],
+    garnish:'Freshly grated nutmeg',
+    note:"John Lennon's favourite. Creamy, indulgent, and considerably more intoxicating than it lets on. Treat it with appropriate respect."
+  },
+  {
+    id:'horses-neck', name:"Horse's Neck", section:'by-bottle', category:'brandy',
+    glassType:'highball', liquidColor:'rgba(192,132,55,.75)',
+    glass:'Highball glass',
+    ingredients:['2 oz Cognac or Bourbon','4–5 oz Ginger Ale','2 dashes Angostura Bitters'],
+    method:["Peel an entire lemon in one continuous spiral; drape it inside a tall glass.",'Add ice so the spiral is held against the glass.','Pour in cognac and bitters.','Top with ginger ale; stir gently.'],
+    garnish:"Full lemon spiral — the 'horse's neck'",
+    note:"The garnish is the spectacle: a single unbroken spiral from rim to base. Getting it right is half the craft and all of the showmanship."
+  },
+  {
+    id:'stinger', name:'Stinger', section:'by-bottle', category:'brandy',
+    glassType:'coupe', liquidColor:'rgba(212,235,212,.7)',
+    glass:'Rocks glass or coupe',
+    ingredients:['2 oz Cognac or Brandy','¾ oz White Crème de Menthe'],
+    method:['Combine both in a shaker with ice.','Shake well for 12 seconds.','Strain into a chilled coupe, or over ice in a rocks glass.'],
+    garnish:'Fresh mint sprig',
+    note:"The nightcap of choice for a certain class of mid-century American social climber. Peculiar, minty, oddly compelling."
+  },
+  {
+    id:'vieux-carre', name:'Vieux Carré', section:'by-bottle', category:'brandy',
+    glassType:'rocks', liquidColor:'rgba(152,75,26,.8)',
+    glass:'Rocks glass',
+    ingredients:['¾ oz Rye Whiskey','¾ oz Cognac','¾ oz Sweet Vermouth','1 tsp Bénédictine',"1 dash Peychaud's Bitters",'1 dash Angostura Bitters'],
+    method:['Combine all in a mixing glass with ice.','Stir for 25–30 seconds.','Strain over a large ice cube.'],
+    garnish:'Lemon or orange peel',
+    note:'Created at the Hotel Monteleone in New Orleans, circa 1938. Named for the French Quarter. A masterpiece of complexity worn lightly.'
+  },
+  {
+    id:'widows-kiss', name:"Widow's Kiss", section:'by-bottle', category:'brandy',
+    glassType:'coupe', liquidColor:'rgba(212,172,95,.8)',
+    glass:'Coupe glass',
+    ingredients:['1½ oz Calvados','½ oz Yellow Chartreuse','½ oz Bénédictine','1 dash Angostura Bitters'],
+    method:['Combine all in a shaker with ice.','Shake for 12 seconds.','Double-strain into a chilled coupe.'],
+    garnish:'Strawberry',
+    note:"From George Kappeler's Modern American Drinks, 1895. Apple brandy and herbal liqueurs in a seductive accord that requires no further introduction."
+  },
+
+  /* ── OTHER / LIQUEURS ── */
+  {
+    id:'amaretto-sour', name:'Amaretto Sour', section:'by-bottle', category:'other',
+    glassType:'rocks', liquidColor:'rgba(212,112,35,.8)',
+    glass:'Rocks glass',
+    ingredients:['1½ oz Amaretto','¾ oz Cask-Proof Bourbon','1 oz Fresh Lemon Juice','1 tsp Simple Syrup','1 Egg White'],
+    method:['Dry-shake all without ice for 10 seconds.','Add ice; shake hard for 15 seconds.','Strain over ice.','Dot with Angostura bitters.'],
+    garnish:'Brandied cherry and lemon peel',
+    note:"Jeffrey Morgenthaler's definitive reinvention of a much-maligned classic. The bourbon adds backbone; the egg white adds silk."
+  },
+  {
+    id:'b52', name:'B-52', section:'by-bottle', category:'other',
+    glassType:'shot', liquidColor:'rgba(72,32,8,.88)',
+    glass:'Shot glass',
+    ingredients:['⅓ oz Coffee Liqueur (Kahlúa)','⅓ oz Irish Cream (Baileys)','⅓ oz Grand Marnier'],
+    method:['Pour coffee liqueur into the shot glass.','Layer Irish cream slowly over a spoon.','Layer Grand Marnier carefully on top.','The three layers should remain visible and distinct.'],
+    garnish:'None',
+    note:'A 1970s layered shot rewarding patience and a steady hand. Shooting it destroys the architecture but delivers all the flavour at once.'
+  },
+  {
+    id:'grasshopper', name:'Grasshopper', section:'by-bottle', category:'other',
+    glassType:'coupe', liquidColor:'rgba(92,195,112,.8)',
+    glass:'Coupe glass',
+    ingredients:['1 oz Green Crème de Menthe','1 oz White Crème de Cacao','1 oz Heavy Cream'],
+    method:['Combine all in a shaker with ice.','Shake vigorously for 15 seconds.','Double-strain into a chilled coupe.'],
+    garnish:'Freshly grated dark chocolate',
+    note:"A New Orleans invention from Tujague's, circa 1919. Minty green and indecently sweet — an after-dinner drink that is its own dessert."
+  },
+  {
+    id:'midori-sour', name:'Midori Sour', section:'by-bottle', category:'other',
+    glassType:'rocks', liquidColor:'rgba(112,195,72,.8)',
+    glass:'Rocks glass',
+    ingredients:['1½ oz Midori Melon Liqueur','¾ oz Fresh Lemon Juice','½ oz Simple Syrup','1 Egg White (optional)'],
+    method:['If using egg white, dry-shake all without ice for 10 seconds.','Add ice; shake hard for 15 seconds.','Strain over fresh ice.'],
+    garnish:'Honeydew melon ball and cherry',
+    note:'Midori launched at Studio 54 in 1978 with considerable fanfare. The sour format gives it purpose, structure, and a reason to exist beyond novelty.'
+  },
+  {
+    id:'pimms-cup', name:"Pimm's Cup", section:'by-bottle', category:'other',
+    glassType:'highball', liquidColor:'rgba(155,95,35,.75)',
+    glass:'Highball glass or jug',
+    ingredients:["2 oz Pimm's No. 1",'4 oz British-style Lemonade (sparkling)','Splash of Ginger Ale'],
+    method:["Fill a tall glass with ice.",'Add Pimm\'s.','Top with lemonade and ginger ale.','Add all garnishes and stir gently.'],
+    garnish:'Cucumber, strawberry, orange, mint — the full pageant',
+    note:"The official drink of Wimbledon and the English summer. Best served in a jug large enough to share, in a garden, before it rains — which it will."
+  },
+  {
+    id:'sloe-gin-fizz', name:'Sloe Gin Fizz', section:'by-bottle', category:'other',
+    glassType:'highball', liquidColor:'rgba(172,55,72,.7)',
+    glass:'Collins glass',
+    ingredients:['2 oz Sloe Gin','1 oz Fresh Lemon Juice','½ oz Simple Syrup','3–4 oz Soda Water'],
+    method:['Combine sloe gin, lemon juice, and syrup in a shaker with ice.','Shake for 10 seconds.','Strain into a tall glass over ice.','Top with soda water.'],
+    garnish:'Lemon wheel and cherry',
+    note:'Made with sloe berries — small wild plums — steeped in gin through autumn. A very British invention, the colour of late October, the flavour of briar.'
+  }
+];
+
+/* ════════════════════════════════════════════════════════
+   CONFIG
+════════════════════════════════════════════════════════ */
+const SPIRITS = [
+  { id:'whiskey', label:'🥃 Whiskey / Bourbon' },
+  { id:'vodka',   label:'🫙 Vodka'             },
+  { id:'gin',     label:'🌿 Gin'               },
+  { id:'rum',     label:'🍹 Rum'               },
+  { id:'tequila', label:'🌵 Tequila / Mezcal'  },
+  { id:'brandy',  label:'🍊 Brandy / Cognac'   },
+  { id:'other',   label:'🍸 Other / Liqueurs'  }
+];
+
+const SECTION_TITLES = {
+  classics:  'The Classics',
+  'by-bottle': 'By the Bottle',
+  cabinet:   'My Cabinet'
+};
+
+/* ════════════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════════════ */
+let currentView   = 'home';
+let currentSpirit = 'whiskey';
+let searchQuery   = '';
+let openDrinkId   = null;
+let favorites     = new Set(JSON.parse(localStorage.getItem('cyp_fav') || '[]'));
+
+/* ════════════════════════════════════════════════════════
+   SVG GLASS ILLUSTRATIONS
+════════════════════════════════════════════════════════ */
+function glassSVG(type, lc) {
+  const S = '#a07830'; // stroke color
+  const types = {
+
+    coupe: () => `<svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- liquid -->
+      <path d="M 28,70 Q 34,110 80,114 Q 126,110 132,70 Z" fill="${lc}"/>
+      <!-- bowl outline -->
+      <path d="M 22,55 Q 30,110 80,114 Q 130,110 138,55" fill="none" stroke="${S}" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- rim -->
+      <line x1="18" y1="55" x2="142" y2="55" stroke="${S}" stroke-width="1.5"/>
+      <!-- stem -->
+      <line x1="80" y1="114" x2="80" y2="162" stroke="${S}" stroke-width="1.5"/>
+      <!-- base -->
+      <line x1="50" y1="162" x2="110" y2="162" stroke="${S}" stroke-width="2"/>
+      <line x1="54" y1="167" x2="106" y2="167" stroke="${S}" stroke-width="1" opacity=".5"/>
+      <!-- highlight -->
+      <path d="M 32,60 Q 38,105 72,112" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>`,
+
+    martini: () => `<svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- liquid triangle -->
+      <path d="M 52,88 L 80,118 L 108,88 Z" fill="${lc}"/>
+      <!-- V outline -->
+      <path d="M 14,42 L 80,118 L 146,42" fill="none" stroke="${S}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+      <!-- rim -->
+      <line x1="10" y1="42" x2="150" y2="42" stroke="${S}" stroke-width="1.5"/>
+      <!-- stem -->
+      <line x1="80" y1="118" x2="80" y2="165" stroke="${S}" stroke-width="1.5"/>
+      <!-- base -->
+      <line x1="52" y1="165" x2="108" y2="165" stroke="${S}" stroke-width="2"/>
+      <line x1="55" y1="170" x2="105" y2="170" stroke="${S}" stroke-width="1" opacity=".5"/>
+      <!-- highlight -->
+      <line x1="26" y1="44" x2="72" y2="112" stroke="rgba(255,255,255,.18)" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>`,
+
+    rocks: () => `<svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- liquid fill -->
+      <path d="M 29,98 L 26,154 L 134,154 L 131,98 Z" fill="${lc}"/>
+      <!-- glass outline -->
+      <path d="M 26,58 L 24,156 L 136,156 L 134,58" fill="none" stroke="${S}" stroke-width="1.5" stroke-linejoin="round"/>
+      <!-- rim line -->
+      <line x1="24" y1="58" x2="136" y2="58" stroke="${S}" stroke-width="1.5"/>
+      <!-- bottom line -->
+      <line x1="24" y1="156" x2="136" y2="156" stroke="${S}" stroke-width="1.5"/>
+      <!-- ice cubes -->
+      <rect x="46" y="66" width="24" height="20" rx="2" fill="rgba(255,255,255,.17)" stroke="rgba(255,255,255,.28)" stroke-width=".9"/>
+      <rect x="86" y="72" width="22" height="18" rx="2" fill="rgba(255,255,255,.13)" stroke="rgba(255,255,255,.22)" stroke-width=".9"/>
+      <!-- highlight -->
+      <line x1="32" y1="62" x2="32" y2="150" stroke="rgba(255,255,255,.14)" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>`,
+
+    highball: () => `<svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- liquid fill -->
+      <path d="M 46,62 L 44,166 L 116,166 L 114,62 Z" fill="${lc}"/>
+      <!-- glass outline -->
+      <path d="M 44,28 L 42,168 L 118,168 L 116,28" fill="none" stroke="${S}" stroke-width="1.5" stroke-linejoin="round"/>
+      <!-- rim -->
+      <line x1="42" y1="28" x2="118" y2="28" stroke="${S}" stroke-width="1.5"/>
+      <!-- bottom -->
+      <line x1="42" y1="168" x2="118" y2="168" stroke="${S}" stroke-width="1.5"/>
+      <!-- bubbles -->
+      <circle cx="68" cy="115" r="2.5" fill="rgba(255,255,255,.32)"/>
+      <circle cx="88" cy="92" r="2" fill="rgba(255,255,255,.26)"/>
+      <circle cx="74" cy="80" r="1.8" fill="rgba(255,255,255,.22)"/>
+      <circle cx="98" cy="132" r="2.2" fill="rgba(255,255,255,.26)"/>
+      <circle cx="62" cy="98" r="1.5" fill="rgba(255,255,255,.2)"/>
+      <!-- highlight -->
+      <line x1="50" y1="32" x2="50" y2="162" stroke="rgba(255,255,255,.14)" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`,
+
+    flute: () => `<svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- liquid fill -->
+      <path d="M 62,52 L 58,146 L 102,146 L 98,52 Z" fill="${lc}"/>
+      <!-- glass left edge -->
+      <path d="M 62,28 L 57,148" fill="none" stroke="${S}" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- glass right edge -->
+      <path d="M 98,28 L 103,148" fill="none" stroke="${S}" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- rim -->
+      <line x1="60" y1="28" x2="100" y2="28" stroke="${S}" stroke-width="1.5"/>
+      <!-- base of bowl -->
+      <path d="M 57,148 Q 70,154 80,154 Q 90,154 103,148" fill="none" stroke="${S}" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- stem -->
+      <line x1="80" y1="154" x2="80" y2="170" stroke="${S}" stroke-width="1.5"/>
+      <!-- base -->
+      <line x1="58" y1="170" x2="102" y2="170" stroke="${S}" stroke-width="1.8"/>
+      <!-- bubbles -->
+      <circle cx="74" cy="120" r="1.8" fill="rgba(255,255,255,.35)"/>
+      <circle cx="82" cy="95" r="1.5" fill="rgba(255,255,255,.3)"/>
+      <circle cx="76" cy="72" r="1.3" fill="rgba(255,255,255,.25)"/>
+      <circle cx="84" cy="52" r="1.2" fill="rgba(255,255,255,.2)"/>
+    </svg>`,
+
+    wine: () => `<svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- liquid fill (lower portion of bowl) -->
+      <path d="M 22,92 C 18,118 42,132 70,132 Q 80,136 90,132 C 118,132 142,118 138,92 Z" fill="${lc}"/>
+      <!-- bowl left edge -->
+      <path d="M 30,42 C 12,65 12,118 70,130" fill="none" stroke="${S}" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- bowl right edge -->
+      <path d="M 130,42 C 148,65 148,118 90,130" fill="none" stroke="${S}" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- bowl bottom curve -->
+      <path d="M 70,130 Q 80,135 90,130" fill="none" stroke="${S}" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- rim -->
+      <line x1="28" y1="42" x2="132" y2="42" stroke="${S}" stroke-width="1.5"/>
+      <!-- stem -->
+      <line x1="80" y1="130" x2="80" y2="162" stroke="${S}" stroke-width="1.5"/>
+      <!-- base -->
+      <line x1="52" y1="162" x2="108" y2="162" stroke="${S}" stroke-width="2"/>
+      <line x1="55" y1="167" x2="105" y2="167" stroke="${S}" stroke-width="1" opacity=".5"/>
+      <!-- highlight -->
+      <path d="M 34,46 C 18,68 20,112 50,126" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>`,
+
+    shot: () => `<svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- liquid fill (full) -->
+      <path d="M 44,94 L 48,162 L 112,162 L 116,94 Z" fill="${lc}"/>
+      <!-- glass outline -->
+      <path d="M 42,88 L 46,164 L 114,164 L 118,88" fill="none" stroke="${S}" stroke-width="1.5" stroke-linejoin="round"/>
+      <!-- rim -->
+      <line x1="40" y1="88" x2="120" y2="88" stroke="${S}" stroke-width="1.5"/>
+      <!-- bottom -->
+      <line x1="46" y1="164" x2="114" y2="164" stroke="${S}" stroke-width="1.5"/>
+      <!-- layer lines -->
+      <line x1="44" y1="112" x2="116" y2="112" stroke="rgba(255,255,255,.22)" stroke-width=".9"/>
+      <line x1="44" y1="136" x2="116" y2="136" stroke="rgba(255,255,255,.18)" stroke-width=".9"/>
+      <!-- highlight -->
+      <line x1="50" y1="92" x2="52" y2="158" stroke="rgba(255,255,255,.18)" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`,
+
+    tiki: () => `<svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- liquid fill -->
+      <path d="M 34,82 C 28,110 28,148 34,160 L 126,160 C 132,148 132,110 126,82 Z" fill="${lc}"/>
+      <!-- mug body -->
+      <path d="M 32,38 C 24,65 24,132 32,162 L 128,162 C 136,132 136,65 128,38 Z" fill="none" stroke="${S}" stroke-width="1.5" stroke-linejoin="round"/>
+      <!-- rim -->
+      <line x1="30" y1="38" x2="130" y2="38" stroke="${S}" stroke-width="1.5"/>
+      <!-- tiki face: eyes -->
+      <ellipse cx="60" cy="80" rx="8" ry="8" fill="none" stroke="${S}" stroke-width="1" opacity=".6"/>
+      <ellipse cx="100" cy="80" rx="8" ry="8" fill="none" stroke="${S}" stroke-width="1" opacity=".6"/>
+      <!-- nose -->
+      <path d="M 78,90 Q 80,96 82,90" fill="none" stroke="${S}" stroke-width=".9" opacity=".55"/>
+      <!-- mouth -->
+      <path d="M 64,108 Q 80,118 96,108" fill="none" stroke="${S}" stroke-width="1" opacity=".58" stroke-linecap="round"/>
+      <!-- brow lines -->
+      <line x1="52" y1="70" x2="68" y2="68" stroke="${S}" stroke-width=".9" opacity=".5"/>
+      <line x1="92" y1="68" x2="108" y2="70" stroke="${S}" stroke-width=".9" opacity=".5"/>
+      <!-- garnish stick -->
+      <line x1="80" y1="28" x2="80" y2="10" stroke="${S}" stroke-width=".9" opacity=".5"/>
+      <path d="M 80,10 Q 92,4 106,7" fill="none" stroke="${S}" stroke-width=".9" opacity=".5" stroke-linecap="round"/>
+    </svg>`,
+
+    mug: () => `<svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- liquid fill -->
+      <path d="M 36,94 L 36,156 L 118,156 L 118,94 Z" fill="${lc}"/>
+      <!-- mug body -->
+      <path d="M 34,46 L 34,158 L 120,158 L 120,46 Z" fill="none" stroke="${S}" stroke-width="1.5" stroke-linejoin="round"/>
+      <!-- rim -->
+      <line x1="32" y1="46" x2="122" y2="46" stroke="${S}" stroke-width="1.5"/>
+      <!-- handle -->
+      <path d="M 120,76 Q 150,76 150,104 Q 150,132 120,132" fill="none" stroke="${S}" stroke-width="2" stroke-linecap="round"/>
+      <!-- copper shine -->
+      <line x1="42" y1="52" x2="42" y2="152" stroke="rgba(245,198,82,.22)" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- highlight -->
+      <line x1="50" y1="50" x2="50" y2="152" stroke="rgba(255,255,255,.12)" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`
+  };
+
+  return (types[type] || types.rocks)();
+}
+
+/* ════════════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════════════ */
+function saveFav() { localStorage.setItem('cyp_fav', JSON.stringify([...favorites])); }
+
+function toggleFav(id) {
+  favorites.has(id) ? favorites.delete(id) : favorites.add(id);
+  saveFav();
+  renderGrid(); // refresh grid so fav dots update
+  if (openDrinkId === id) updateModalFavBtn();
+}
+
+function heartSVG() {
+  return `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+  </svg>`;
+}
+
+function sortAZ(arr) {
+  return [...arr].sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/* ════════════════════════════════════════════════════════
+   THUMBNAIL HTML
+════════════════════════════════════════════════════════ */
+function thumbHTML(c) {
+  const fav = favorites.has(c.id);
+  return `<button class="thumb-card" onclick="openModal('${c.id}')">
+    <div class="paper-texture"></div>
+    <span class="thumb-corner">◆</span>
+    ${fav ? '<span class="thumb-fav-dot">♥</span>' : ''}
+    <span class="thumb-name">${c.name}</span>
+  </button>`;
+}
+
+/* ════════════════════════════════════════════════════════
+   MODAL
+════════════════════════════════════════════════════════ */
+function openModal(id) {
+  const c = COCKTAILS.find(d => d.id === id);
+  if (!c) return;
+  openDrinkId = id;
+
+  // Illustration
+  document.getElementById('modal-glass').innerHTML = glassSVG(c.glassType, c.liquidColor);
+
+  // Recipe content
+  const ingredients = c.ingredients.map(i => `<li>${i}</li>`).join('');
+  const steps = c.method.map((s, i) =>
+    `<div class="modal-step"><span class="modal-step-num">${i+1}.</span>${s}</div>`
+  ).join('');
+  document.getElementById('modal-recipe').innerHTML = `
+    <h2 class="modal-name">${c.name}</h2>
+    <p class="modal-glass-label">🥂&thinsp; ${c.glass}</p>
+    <div class="modal-divider"></div>
+    <p class="modal-section-label">Ingredients</p>
+    <ul class="modal-ingredients">${ingredients}</ul>
+    <div class="modal-divider"></div>
+    <p class="modal-section-label">Method</p>
+    <div class="modal-method">${steps}</div>
+    <p class="modal-garnish"><span class="modal-garnish-label">Garnish: </span>${c.garnish}</p>
+    ${c.note ? `<p class="modal-note">${c.note}</p>` : ''}
+  `;
+
+  updateModalFavBtn();
+  document.getElementById('modal-backdrop').classList.add('open');
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  openDrinkId = null;
+  document.getElementById('modal-backdrop').classList.remove('open');
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function updateModalFavBtn() {
+  const btn = document.getElementById('modal-fav-btn');
+  const isFav = favorites.has(openDrinkId);
+  btn.classList.toggle('active', isFav);
+  btn.innerHTML = `${heartSVG()} ${isFav ? 'Saved' : 'Save'}`;
+}
+
+function toggleModalFav() {
+  if (!openDrinkId) return;
+  toggleFav(openDrinkId);
+}
+
+/* ════════════════════════════════════════════════════════
+   RENDER GRID
+════════════════════════════════════════════════════════ */
+function renderSpiritTabs() {
+  document.getElementById('spirit-tabs').innerHTML = SPIRITS.map(s =>
+    `<button class="spirit-tab${s.id === currentSpirit ? ' active' : ''}" onclick="setSpirit('${s.id}')">${s.label}</button>`
+  ).join('');
+}
+
+function renderGrid() {
+  const grid = document.getElementById('thumb-grid');
+  let list = [];
+
+  if (searchQuery) {
+    // Search all cocktails
+    list = sortAZ(COCKTAILS.filter(c => c.name.toLowerCase().includes(searchQuery)));
+    document.getElementById('section-title').textContent = `Results for "${searchQuery}"`;
+    document.getElementById('spirit-tabs-wrap').style.display = 'none';
+  } else if (currentView === 'classics') {
+    list = sortAZ(COCKTAILS.filter(c => c.section === 'classics'));
+    document.getElementById('section-title').textContent = SECTION_TITLES.classics;
+    document.getElementById('spirit-tabs-wrap').style.display = 'none';
+  } else if (currentView === 'by-bottle') {
+    list = sortAZ(COCKTAILS.filter(c => c.section === 'by-bottle' && c.category === currentSpirit));
+    document.getElementById('section-title').textContent = SECTION_TITLES['by-bottle'];
+    document.getElementById('spirit-tabs-wrap').style.display = 'block';
+    renderSpiritTabs();
+  } else if (currentView === 'cabinet') {
+    list = sortAZ(COCKTAILS.filter(c => favorites.has(c.id)));
+    document.getElementById('section-title').textContent = SECTION_TITLES.cabinet;
+    document.getElementById('spirit-tabs-wrap').style.display = 'none';
+  }
+
+  if (currentView === 'cabinet' && list.length === 0 && !searchQuery) {
+    grid.innerHTML = `<div class="empty-cabinet" style="grid-column:1/-1">
+      <div class="empty-icon">⬡</div>
+      <p class="empty-title">Your cabinet is bare. Start collecting.</p>
+      <p class="empty-sub">Press Save on any recipe to reserve your table.</p>
+    </div>`;
+    return;
+  }
+
+  if (list.length === 0) {
+    grid.innerHTML = `<p class="no-results">No libations found by that name.</p>`;
+    return;
+  }
+
+  grid.innerHTML = list.map(thumbHTML).join('');
+}
+
+/* ════════════════════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════════════════════ */
+function goHome() {
+  currentView = 'home';
+  searchQuery = '';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('screen-home').classList.add('active');
+  document.getElementById('screen-section').classList.remove('active');
+}
+
+function setSection(view) {
+  currentView = view;
+  searchQuery = '';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('screen-home').classList.remove('active');
+  document.getElementById('screen-section').classList.add('active');
+  // Update tab highlights
+  document.querySelectorAll('.section-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.s === view)
+  );
+  renderGrid();
+}
+
+function setSpirit(spirit) {
+  currentSpirit = spirit;
+  renderGrid();
+}
+
+/* ════════════════════════════════════════════════════════
+   SEARCH
+════════════════════════════════════════════════════════ */
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value.trim().toLowerCase();
+  renderGrid();
+});
+
+/* ════════════════════════════════════════════════════════
+   KEYBOARD
+════════════════════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && openDrinkId) closeModal();
+});
+
+/* ════════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════════ */
+// Home screen is shown by default (active class set in HTML)
+</script>
+</body>
+</html>
