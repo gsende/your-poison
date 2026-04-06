@@ -233,16 +233,27 @@
     /* Spirit tabs */
     .spirit-tabs {
       display: flex; flex-wrap: wrap; justify-content: center;
-      gap: .45rem; padding: 1rem 1rem .5rem;
+      gap: .6rem; padding: 1.2rem 1rem .8rem;
       max-width: 1380px; margin: 0 auto;
     }
     .spirit-tab {
-      background: rgba(26,21,16,.75); border: 1px solid rgba(160,120,48,.5);
-      color: var(--parchment-dk); font-family: 'IM Fell English', serif;
-      font-size: .8rem; padding: .38rem .9rem; cursor: pointer; transition: all .22s;
+      background: rgba(26,21,16,.85);
+      border: 1px solid rgba(160,120,48,.6);
+      box-shadow: 0 0 0 2px var(--bg-dark), 0 3px 12px rgba(0,0,0,.4);
+      color: var(--parchment-md); font-family: 'Playfair Display', serif;
+      font-size: .82rem; letter-spacing: .1em;
+      padding: .55rem 1.2rem; cursor: pointer; transition: all .22s;
     }
-    .spirit-tab:hover { border-color: var(--gold-mid); color: var(--gold-bright); background: rgba(201,168,76,.08); }
-    .spirit-tab.active { background: rgba(201,168,76,.13); border-color: var(--gold-mid); color: var(--gold-bright); }
+    .spirit-tab:hover {
+      border-color: var(--gold-mid); color: var(--gold-bright);
+      background: rgba(201,168,76,.1);
+      box-shadow: 0 0 0 2px var(--bg-dark), 0 4px 16px rgba(0,0,0,.5), 0 0 10px rgba(201,168,76,.08);
+      transform: translateY(-1px);
+    }
+    .spirit-tab.active {
+      background: rgba(201,168,76,.16); border-color: var(--gold-mid); color: var(--gold-bright);
+      box-shadow: 0 0 0 2px var(--bg-dark), 0 0 0 3px rgba(160,120,48,.5), 0 4px 16px rgba(0,0,0,.5);
+    }
 
     /* Section heading */
     .section-heading {
