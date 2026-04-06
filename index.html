@@ -548,7 +548,7 @@
 
   <div class="home-cards">
     <!-- The Classics -->
-    <button class="home-card" onclick="setSection('classics')">
+    <button class="home-card" onclick="gtag('event','click_classics',{event_category:'navigation',event_label:'The Classics'});setSection('classics')">
       <div class="paper-texture"></div>
       <span class="home-card-corner">◆</span>
       <div class="home-card-icon">
@@ -1203,6 +1203,24 @@ const COCKTAILS = [
     method:['Combine sloe gin, lemon juice, and syrup in a shaker with ice.','Shake for 10 seconds.','Strain into a tall glass over ice.','Top with soda water.'],
     garnish:'Lemon wheel and cherry',
     note:'Made with sloe berries — small wild plums — steeped in gin through autumn. A very British invention, the colour of late October, the flavour of briar.'
+  },
+  {
+    id:'fernet-con-coca', name:'Fernet con Coca', section:'by-bottle', category:'other',
+    glassType:'highball', liquidColor:'rgba(15,10,5,.85)',
+    glass:'Tall glass',
+    ingredients:['2 oz Fernet-Branca','4–5 oz Coca-Cola (cold)'],
+    method:['Fill a tall glass with plenty of ice.','Pour the Fernet over the ice.','Top with Coca-Cola, pouring slowly to preserve the fizz.','Give it one gentle stir — no more.'],
+    garnish:'None — purists forbid it',
+    note:"Argentina's national aperitif ritual. Ask for it in Buenos Aires and you're one of us. The bitterness of the Fernet wrestles with the sweetness of the Cola, and somehow they end up best friends."
+  },
+  {
+    id:'caipirinha', name:'Caipirinha', section:'by-bottle', category:'other',
+    glassType:'rocks', liquidColor:'rgba(210,230,130,.75)',
+    glass:'Old Fashioned / rocks glass',
+    ingredients:['2 oz Cachaça','1 lime, cut into wedges','2 tsp granulated sugar'],
+    method:['Place the lime wedges and sugar directly in a rocks glass.','Muddle firmly to release the juice and oils from the lime skin.','Fill the glass with crushed ice.','Pour the cachaça over the ice and stir well to combine.'],
+    garnish:'A wedge of lime on the rim',
+    note:"Brazil's national cocktail — three ingredients, zero compromise. It lives and dies by the quality of the cachaça and the aggression of the muddle. Don't be shy with it."
   }
 ];
 
